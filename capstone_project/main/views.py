@@ -17,8 +17,17 @@ import tensorflow as tf
 import os.path
 import csv
 
-# Create your views here.
 def index(request):
+    return render(request, 'capstone_project/index.html')
+
+def signin(request):
+    return render(request, 'capstone_project/login.html')
+
+def signup(request):
+    return render(request, 'capstone_project/signup.html')
+
+# Create your views here.
+def stockanalysis(request):
     path = 'C:/Users/sehunKim/Desktop/Project/CapstonDesign/reference/companylist.csv'
     stock_path = 'C:/Users/sehunKim/Desktop/Project/CapstonDesign/capstone_project/main/data/'
     company_dataFrame = pd.read_csv(path)
@@ -122,7 +131,7 @@ def index(request):
     else:
         form = Company()
 
-    return render(request, 'capstone_project/index.html', {
+    return render(request, 'capstone_project/stockanalysis.html', {
         'form': form,
         'data': data,
         'label': date,

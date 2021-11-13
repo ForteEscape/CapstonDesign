@@ -1,6 +1,14 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
+index_patterns = [
+    path('', views.index),
+    path('index/', views.index, name='index'),
+    path('login/', views.signin, name='signin'),
+    path('signup/', views.signup, name='signup'),
+    path('stockanalysis/', views.stockanalysis, name='stock')
+]
+
 urlpatterns = [
-    path('', views.index, name='index')
+    path('', include(index_patterns))
 ]

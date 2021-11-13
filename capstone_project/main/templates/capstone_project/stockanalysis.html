@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block title %} template extension test {% endblock %}
+
+{% block script %}
+{% endblock %}
+
+{% block content %}
+<div>
+    <form method="POST" action="" class="form">
+        {% csrf_token %}
+        {{ form }}
+        <button name="get-data" class="btn btn-primary" type="submit" value="get-data">가져오기</button>
+    </form>
+</div>
+
+<div>
+    <div id="container" style="width: 80%">
+        <canvas id="line-chart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script>
+        var config = {
+            type: 'line',
+            data: {
+                labels: {{ label|safe }},
+                datasets:[
+                    {
+                        borderWidth: 5,
+                        borderColor: 'rgba(30, 144, 255, 0.8)',
+                        data: {{ data|safe }},
+                        label: 'real cost',
+                        fill: false,
+                        tension: 0,
+                    },
+                    {
+                        borderWidth: 5,
+                        borderColor: 'rgba(255, 51, 51, 0.8)',
+                        data: {{ predict_data|safe }},
+                        label: 'predict cost',
+                        fill: false,
+                        tension: 0,
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            min: {{ min }},
+                            max: {{ max }},
+                        }
+                    }]
+                }
+            }
+        };
+
+        window.onload = function(){
+            var ctx = document.getElementById('line-chart').getContext('2d')
+            window.myChart = new Chart(ctx, config);
+        };
+    </script>
+</div>
+{% endblock %}
