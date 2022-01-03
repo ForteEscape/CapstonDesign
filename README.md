@@ -21,6 +21,11 @@
 ```buildoutcfg
 
 ├─capstone_project
+│  │
+│  ├─accounts                                               - 계정 관련 기능 모듈
+│  │
+│  ├─capstone_project                                       - 프로젝트 전체 관리 모듈
+│  │
 │  ├─main
 │  │   ├─data                                               - data파일 저장용
 │  │   ├─static
