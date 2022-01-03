@@ -19,12 +19,6 @@ import csv
 def index(request):
     return render(request, 'capstone_project/index.html')
 
-def signin(request):
-    return render(request, 'capstone_project/login.html')
-
-def signup(request):
-    return render(request, 'capstone_project/signup.html')
-
 # Create your views here.
 def stockanalysis(request):
     path = 'C:/Users/sehunKim/Desktop/Project/CapstonDesign/reference/companylist.csv'
