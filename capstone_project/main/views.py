@@ -5,7 +5,6 @@ plaidml.keras.install_backend()
 
 from django.shortcuts import render
 from .forms import *
-from .models import StockData
 from datetime import datetime, timedelta
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout, GRU
