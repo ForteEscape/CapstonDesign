@@ -1,5 +1,6 @@
 import numpy as np
 import plaidml.keras
+
 plaidml.keras.install_backend()
 
 from django.shortcuts import render, redirect
@@ -15,8 +16,10 @@ import tensorflow as tf
 import os.path
 import csv
 
+
 def index(request):
     return render(request, 'capstone_project/index.html')
+
 
 
 # Create your views here.
