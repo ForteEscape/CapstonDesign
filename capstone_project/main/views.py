@@ -1,10 +1,8 @@
 import numpy as np
 import plaidml.keras
-from django.contrib.auth.decorators import login_required
-
 plaidml.keras.install_backend()
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import *
 from datetime import datetime, timedelta
 from tensorflow.keras.models import Sequential
@@ -22,7 +20,6 @@ def index(request):
 
 
 # Create your views here.
-@login_required(login_url='/accounts/login')
 def stockanalysis(request):
     path = 'C:/Users/sehunKim/Desktop/Project/CapstonDesign/reference/companylist.csv'
     stock_path = 'C:/Users/sehunKim/Desktop/Project/CapstonDesign/capstone_project/main/data/'
@@ -200,3 +197,6 @@ def make_sequence_data(feature_numpy, label_numpy, window_size):
 
     return np.array(feature_list), np.array(label_list)
 
+def logout(request):
+    auth.logout(request)
+    return redirect('/')
