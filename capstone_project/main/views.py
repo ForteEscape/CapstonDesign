@@ -1,9 +1,10 @@
 import numpy as np
 import plaidml.keras
+from django.contrib import auth
 
 plaidml.keras.install_backend()
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import *
 from datetime import datetime, timedelta
 from tensorflow.keras.models import Sequential
@@ -197,3 +198,6 @@ def make_sequence_data(feature_numpy, label_numpy, window_size):
 
     return np.array(feature_list), np.array(label_list)
 
+def logout(request):
+    auth.logout(request)
+    return redirect('/')
