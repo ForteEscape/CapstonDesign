@@ -1,5 +1,6 @@
 import numpy as np
 import plaidml.keras
+from django.contrib.auth.decorators import login_required
 
 plaidml.keras.install_backend()
 
@@ -21,7 +22,7 @@ def index(request):
     return render(request, 'capstone_project/index.html')
 
 
-
+@login_required(login_url='/accounts/login')
 # Create your views here.
 def stockanalysis(request):
     path = 'C:/Users/sehunKim/Desktop/Project/CapstonDesign/reference/companylist.csv'
