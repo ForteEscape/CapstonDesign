@@ -16,6 +16,9 @@ accounts/views.py
 2022-01-04 19:35 PM
 #3 이슈(https://github.com/ForteEscape/CapstonDesign/issues/3#issue-1093208587 참조)
 E-mail 중복 확인 및 로그인 실패 시 사유 알람 구현
+
+2022-01-04 21:16 PM
+#3 이슈에서 이름 등에 특수 문자가 입력될 시 다시 입력하도록 구현
 """
 
 from django.shortcuts import render, redirect
@@ -60,6 +63,10 @@ def signup(request):
 
     if request.method == 'POST':
         if request.POST['user-password'] == request.POST['user-confirm-pw']:
+
+            if not request.POST['user-name'].isalpha():
+                messages.error(request, '이름에 특수문자 입력은 제한됩니다.')
+                return render(request, 'accounts/signup.html')
 
             # 사용자 id가 이미 존재하는 경우를 검사
             if User.objects.filter(email=request.POST['user-email']).exists():
