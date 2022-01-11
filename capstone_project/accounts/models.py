@@ -3,6 +3,16 @@ models.py
 
 해당 스크립트는 로그인, 회원가입에 사용할 사용자 DB를 정의합니다.
 
+Python Django에서 사용하는 User 모델을 재정의하여 사용하며 구성은 다음과 같습니다.
+
+1. UserManager(BaseUserManager)
+UserManager 클래스는 Django 빌트인 User 클래스에서 기능을 담당하는 클래스로
+DB에 넣을 데이터를 생성하고 추가하는 기능을 담당합니다.
+
+2. User
+User는 사용자 DB table schema 코드로 표현한 것으로 회원가입에 사용할
+데이터 및 기본 키, 외부 키를 정의합니다.
+
 2022-01-04 원래 사용 중이던 Django 자체 User 모델을 수정하여 사용함
 """
 

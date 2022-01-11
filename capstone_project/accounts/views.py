@@ -64,6 +64,7 @@ def signup(request):
     if request.method == 'POST':
         if request.POST['user-password'] == request.POST['user-confirm-pw']:
 
+            # 특수문자 필터링
             if not request.POST['user-name'].isalpha():
                 messages.error(request, '이름에 특수문자 입력은 제한됩니다.')
                 return render(request, 'accounts/signup.html')
