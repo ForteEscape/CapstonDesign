@@ -20,7 +20,7 @@ E-mail 중복 확인 및 로그인 실패 시 사유 알람 구현
 2022-01-04 21:16 PM
 #3 이슈에서 이름 등에 특수 문자가 입력될 시 다시 입력하도록 구현
 """
-
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import auth, messages
 from django.contrib.auth import login, authenticate
@@ -87,3 +87,7 @@ def signup(request):
             return render(request, 'accounts/signup.html')
     return render(request, 'accounts/signup.html')
 
+
+@login_required(login_url='/accounts/login')
+def mypage(request):
+    return render(request, 'accounts/mypage.html')
