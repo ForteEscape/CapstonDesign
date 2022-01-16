@@ -57,7 +57,7 @@ def stockanalysis(request):
 
             # 주가 정보 크롤링
             dataFrame = pdr.get_data_yahoo(stock_code, '2014-01-01')
-            dataFrame['3MA'] = dataFrame['Close'].rolling(window=3).mean() # data moving average column
+            dataFrame['3MA'] = dataFrame['Close'].rolling(window=3).mean()  # data moving average column
             dataFrame['5MA'] = dataFrame['Close'].rolling(window=5).mean()
 
             # 만약 해당 주가 정보 파일(csv)가 존재하지 않을 경우에 csv 파일 생성 및 저장 이후 해당 파일을 불러옴으로서 로딩 시간 단축
@@ -104,7 +104,7 @@ def stockanalysis(request):
 
             predict_data_index = []
             for index in predict_dataFrame:
-                data_original = (float(index) * (adj_max - adj_min)) + adj_min # 역 정규화
+                data_original = (float(index) * (adj_max - adj_min)) + adj_min  # 역 정규화
                 predict_data_index.append(int(data_original))
 
             predict_date_temp = []
@@ -139,10 +139,12 @@ def stockanalysis(request):
         'predict_label': predict_date_list,
     })
 
+
 def getCompanyStockCode(dataframe, company_name):
     code = dataframe.query("name == '{}'".format(company_name))['code'].to_string(index=False)
     code = code.strip()
     return code
+
 
 def data_analysis(company_name, dataFrame):
     dataFrame = dataFrame.dropna()
@@ -166,7 +168,7 @@ def data_analysis(company_name, dataFrame):
 
     X, Y = make_sequence_data(feature_numpy, label_numpy, window_size)
 
-    split = -100 #data seperate
+    split = -100 # data seperate
 
     x_train_data = X[0:split]
     y_train_data = Y[0:split]
@@ -175,7 +177,7 @@ def data_analysis(company_name, dataFrame):
     y_test_data = Y[split:]
 
     model = Sequential()
-    #모델 구축
+    # 모델 구축
     model.add(GRU(
         256,
         activation='tanh',
@@ -191,6 +193,7 @@ def data_analysis(company_name, dataFrame):
 
     return pred
 
+
 # make learning dataset
 def make_sequence_data(feature_numpy, label_numpy, window_size):
     feature_list = []
@@ -201,6 +204,7 @@ def make_sequence_data(feature_numpy, label_numpy, window_size):
         label_list.append(label_numpy[i + window_size])
 
     return np.array(feature_list), np.array(label_list)
+
 
 def logout(request):
     auth.logout(request)

@@ -30,11 +30,12 @@
                 </li>
 
                 <li class="nav-item active">
-                    <a class="nav-link" href="/stockanalysis">주식분석 <span class="sr-only">(current)</span></a>
+                    <!-- 보고서 적기 1번 -->
+                    <a class="nav-link" href="{% url 'stock' %}">주식분석 <span class="sr-only">(current)</span></a>
                 </li>
 
                 <li class="nav-item active">
-                    <a class="nav-link" href="/accounts/mypage">마이페이지 <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="{% url 'mypage' %}">마이페이지 <span class="sr-only">(current)</span></a>
                 </li>
 
                 <li class="nav-item active">
@@ -43,7 +44,7 @@
             </ul>
 
             <div class="logout">
-                <a class="btn btn-info" href="accounts/logout">Log out</a>
+                <a class="btn btn-info" href="{% url 'logout' %}">Log out</a>
             </div>
         </div>
 
@@ -56,10 +57,11 @@
             </ul>
 
             <div class="signin">
-                <a class="btn btn-info" href="accounts/login">Sign in</a>
+                <!-- 아래 표현으로 이름과 매칭되는 url 사용 가능 -->
+                <a class="btn btn-info" href="{% url 'signin' %}">Sign in</a>
             </div>
             <div class="signup" style="margin:20px">
-                <a class="btn btn-primary" href="accounts/signup">Sign up</a>
+                <a class="btn btn-primary" href="{% url 'signup' %}">Sign up</a>
             </div>
         </div>
 
