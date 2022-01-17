@@ -1,6 +1,5 @@
 import numpy as np
 import plaidml.keras
-from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 
 plaidml.keras.install_backend()
@@ -25,10 +24,10 @@ def index(request):
 
 @login_required(login_url='/accounts/login')
 # Create your views here.
-def stockanalysis(request):
+def stock_analysis(request):
     path = 'C:/Users/sehunKim/Desktop/Project/CapstonDesign/reference/companylist.csv'
     stock_path = 'C:/Users/sehunKim/Desktop/Project/CapstonDesign/capstone_project/main/data/'
-    company_dataFrame = pd.read_csv(path)
+    company_dataframe = pd.read_csv(path)
     predict_data = []
     predict_date_list = []
     data = []
@@ -48,7 +47,7 @@ def stockanalysis(request):
         if form.is_valid():
             company_name = form.cleaned_data['company_name_text']
             data_duration = form.cleaned_data['duration_option']
-            stock_code = getCompanyStockCode(company_dataFrame, company_name)
+            stock_code = get_company_stock_code(company_dataframe, company_name)
 
             # 데이터 크롤링 기간 설정
             option = today - timedelta(int(data_duration))
@@ -56,13 +55,13 @@ def stockanalysis(request):
             data_duration_flag = False
 
             # 주가 정보 크롤링
-            dataFrame = pdr.get_data_yahoo(stock_code, '2014-01-01')
-            dataFrame['3MA'] = dataFrame['Close'].rolling(window=3).mean()  # data moving average column
-            dataFrame['5MA'] = dataFrame['Close'].rolling(window=5).mean()
+            dataframe = pdr.get_data_yahoo(stock_code, '2014-01-01')
+            dataframe['3MA'] = dataframe['Close'].rolling(window=3).mean()  # data moving average column
+            dataframe['5MA'] = dataframe['Close'].rolling(window=5).mean()
 
             # 만약 해당 주가 정보 파일(csv)가 존재하지 않을 경우에 csv 파일 생성 및 저장 이후 해당 파일을 불러옴으로서 로딩 시간 단축
             if not os.path.isfile(stock_path + company_name + '.csv'):
-                dataFrame.to_csv(stock_path + company_name + '.csv', encoding='utf-8-sig')
+                dataframe.to_csv(stock_path + company_name + '.csv', encoding='utf-8-sig')
 
             stock_file = open(stock_path + company_name + '.csv')
             stock_data = csv.reader(stock_file)
@@ -95,16 +94,16 @@ def stockanalysis(request):
             data_max = max(data)
             data_min = min(data)
 
-            predict_dataFrame = data_analysis(company_name, dataFrame)
-            data_inverse = dataFrame.dropna()
+            predict_dataframe = data_analysis(company_name, dataframe)
+            data_inverse = dataframe.dropna()
             data_inverse = data_inverse[-100:]
             data_inverse_temp = date_list[-100:]
             adj_max = float(data_inverse['Close'].max())
             adj_min = float(data_inverse['Close'].min())
 
             predict_data_index = []
-            for index in predict_dataFrame:
-                data_original = (float(index) * (adj_max - adj_min)) + adj_min  # 역 정규화
+            for element in predict_dataframe:
+                data_original = (float(element) * (adj_max - adj_min)) + adj_min  # 역 정규화
                 predict_data_index.append(int(data_original))
 
             predict_date_temp = []
@@ -129,7 +128,7 @@ def stockanalysis(request):
     else:
         form = Company()
 
-    return render(request, 'capstone_project/stockanalysis.html', {
+    return render(request, 'capstone_project/stock_analysis.html', {
         'form': form,
         'data': data,
         'label': date,
@@ -140,19 +139,19 @@ def stockanalysis(request):
     })
 
 
-def getCompanyStockCode(dataframe, company_name):
+def get_company_stock_code(dataframe, company_name):
     code = dataframe.query("name == '{}'".format(company_name))['code'].to_string(index=False)
     code = code.strip()
     return code
 
 
-def data_analysis(company_name, dataFrame):
-    dataFrame = dataFrame.dropna()
+def data_analysis(company_name, dataframe):
+    dataframe = dataframe.dropna()
 
     # data normalize
     scaler = MinMaxScaler()
     scale_columns = ['Open', 'High', 'Low', 'Close', 'Adj Close', '3MA', '5MA', 'Volume']
-    scaled_dataframe = scaler.fit_transform(dataFrame[scale_columns])
+    scaled_dataframe = scaler.fit_transform(dataframe[scale_columns])
     scaled_dataframe = pd.DataFrame(scaled_dataframe, columns=scale_columns)
 
     feature_columns = ['3MA', '5MA', 'Close']
@@ -187,7 +186,8 @@ def data_analysis(company_name, dataFrame):
     model.add(Dense(1, activation='linear'))
     model.compile(loss='mse', optimizer='adam', metrics=['mae'])
     early_stop_flag = EarlyStopping(monitor='val_loss', patience=5)
-    model.fit(x_train_data, y_train_data, validation_data=(x_test_data, y_test_data), epochs=100, batch_size=16, callbacks=[early_stop_flag])
+    model.fit(x_train_data, y_train_data, validation_data=(x_test_data, y_test_data),
+              epochs=100, batch_size=16, callbacks=[early_stop_flag])
 
     pred = model.predict(x_test_data)
 
@@ -204,8 +204,3 @@ def make_sequence_data(feature_numpy, label_numpy, window_size):
         label_list.append(label_numpy[i + window_size])
 
     return np.array(feature_list), np.array(label_list)
-
-
-def logout(request):
-    auth.logout(request)
-    return redirect('/')
