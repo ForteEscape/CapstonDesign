@@ -13,7 +13,6 @@ $(document).ready(function () {
                 }
             }
             $('#btnChangePicture').on('click', function () {
-                // document.getElementById('profilePicture').click();
                 if (!$('#btnChangePicture').hasClass('changing')) {
                     $('#profilePicture').click();
                 }
@@ -26,15 +25,12 @@ $(document).ready(function () {
                 $('#btnChangePicture').addClass('changing');
                 $('#btnChangePicture').attr('value', 'Confirm');
                 $('#btnDiscard').removeClass('d-none');
-                // $('#imgProfile').attr('src', '');
             });
             $('#btnDiscard').on('click', function () {
-                // if ($('#btnDiscard').hasClass('d-none')) {
                 $('#btnChangePicture').removeClass('changing');
                 $('#btnChangePicture').attr('value', 'Change');
                 $('#btnDiscard').addClass('d-none');
                 $('#imgProfile').attr('src', $imgSrc);
                 $('#profilePicture').val('');
-                // }
             });
         });
