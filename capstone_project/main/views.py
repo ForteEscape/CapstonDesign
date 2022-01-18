@@ -1,22 +1,31 @@
+"""
+본 기능이 구현되어 있는 main/views.py 파일입니다.
+
+stock analysis의 경우 GRU model을 사용하여 이전 주식 데이터를 이용하여 이후 데이터를 예측합니다.
+어떤 회사 주식을 예측하는지는 사용자의 input으로 들어오며 duration 역시 사용자 input으로 받습니다.
+"""
 import numpy as np
 import plaidml.keras
 from django.contrib.auth.decorators import login_required
 
 plaidml.keras.install_backend()
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from .forms import *
 from datetime import datetime, timedelta
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout, GRU
+from tensorflow.keras.layers import Dense, GRU
 from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import pandas_datareader as pdr
-import tensorflow as tf
 import os.path
 import csv
+from .stockdata import StockData
 
+import sys
+
+print(sys.path)
 
 def index(request):
     return render(request, 'capstone_project/index.html')
@@ -25,9 +34,6 @@ def index(request):
 @login_required(login_url='/accounts/login')
 # Create your views here.
 def stock_analysis(request):
-    path = 'C:/Users/sehunKim/Desktop/Project/CapstonDesign/reference/companylist.csv'
-    stock_path = 'C:/Users/sehunKim/Desktop/Project/CapstonDesign/capstone_project/main/data/'
-    company_dataframe = pd.read_csv(path)
     predict_data = []
     predict_date_list = []
     data = []
@@ -40,6 +46,29 @@ def stock_analysis(request):
     today = datetime.today().date()
     company_name = ''
     data_duration = ''
+
+    """
+    company_list 데이터가 갱신될 때 마다 수정되도록 해 주어야 한다.
+    
+    사용자가 해당 view에 들어올때 data/company_list/companylist.csv의 신선도를 검사한다.
+    만약 하루 정도의 차이가 난다면 자동으로 companylist.csv를 다시 만들어 갱신하도록 한다.
+    
+    => 신생 기업의 경우 주가 데이터가 없어 GRU기반 알고리즘이 제대로 동작하지 않을 가능성이 있다.
+    따라서 매 분기(3달) 마다 companylist.csv를 갱신하도록 하는것이 더 좋을 것 같다.
+    """
+    
+    # 만일 파일이 아예 존재하지 않을 경우에 데이터를 무조건 생성하도록 조치
+    if not os.path.isfile('main/data/company_list/companylist.csv'):
+        stock_manager = StockData()
+        stock_manager.addCsvFile()
+
+    # 매 분기 1일에 갱신을 진행한다.
+    if today.month == 1 or 4 or 7 or 10 and today.day == 1:
+        stock_data_manager = StockData()
+        stock_data_manager.addCsvFile()
+
+    path = 'main/data/company_list/companylist.csv'
+    company_dataframe = pd.read_csv(path)
 
     if request.method == 'POST' and 'get-data' == request.POST.get('get-data'):
         form = Company(request.POST)
@@ -60,6 +89,7 @@ def stock_analysis(request):
             dataframe['5MA'] = dataframe['Close'].rolling(window=5).mean()
 
             # 만약 해당 주가 정보 파일(csv)가 존재하지 않을 경우에 csv 파일 생성 및 저장 이후 해당 파일을 불러옴으로서 로딩 시간 단축
+            stock_path = 'main/data/'
             if not os.path.isfile(stock_path + company_name + '.csv'):
                 dataframe.to_csv(stock_path + company_name + '.csv', encoding='utf-8-sig')
 

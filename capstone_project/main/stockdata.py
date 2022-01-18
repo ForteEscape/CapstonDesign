@@ -1,8 +1,7 @@
 import pandas
 import pandas as pd
 import pandas_datareader as pdr
-from matplotlib import pyplot as plt
-import os.path
+
 
 class StockData:
     def __init__(self):
@@ -53,35 +52,9 @@ class StockData:
         return df
 
     def addCsvFile(self):
-        if os.path.isfile('C:/Users/sehunKim/Desktop/Project/CapstonDesign/reference/companylist.csv'):
-            print('companylist.csv already exists')
-        else:
-            kospi_dataframe = self.__getDownloadKospi()
-            kosdaq_dataframe = self.__getDownloadKosdaq()
+        kospi_dataframe = self.__getDownloadKospi()
+        kosdaq_dataframe = self.__getDownloadKosdaq()
 
-            code_dataframe = pd.concat([kospi_dataframe, kosdaq_dataframe])
-            code_dataframe = code_dataframe[['name', 'code']]
-            code_dataframe.to_csv('companylist.csv', encoding='utf-8-sig')
-
-
-stockData = StockData()
-
-stockData.addCsvFile()
-
-data = stockData.getCompanyStockData('삼성전자')
-data['Close'].plot()
-plt.show()
-
-# 입력 스트링
-#company_input = input()
-#data_start = input()
-#data_end = input()
-
-#code = getStockCode(code_dataframe, company_input)
-
-# 해당 회사의 주가 데이터
-#df = pdr.get_data_yahoo(code)
-
-# graph 출력단
-#df['Close'].plot()
-#plt.show()
+        code_dataframe = pd.concat([kospi_dataframe, kosdaq_dataframe])
+        code_dataframe = code_dataframe[['name', 'code']]
+        code_dataframe.to_csv('main/data/company_list/companylist.csv', encoding='utf-8-sig')
