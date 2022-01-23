@@ -45,7 +45,7 @@ def signin(request):
             return redirect('/')
         else:
             messages.error(request, 'E-mail 또는 비밀번호가 틀립니다.')
-            return render(request, 'accounts/login.html')
+            return render(request, 'accounts/signup.html')
 
     return render(request, 'accounts/login.html')
 
@@ -83,8 +83,9 @@ def signup(request):
 
             return redirect('/')
         else:
-            messages.error(request, '비밀번호가 서로 다릅니다.')
+            messages.error(request, '비밀번호가 틀립니다.')
             return render(request, 'accounts/signup.html')
+
     return render(request, 'accounts/signup.html')
 
 

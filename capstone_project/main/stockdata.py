@@ -1,3 +1,12 @@
+"""
+krx 사이트에서 주식 데이터를 받아 회사이름과 코드 데이터를 추출하여 관리하는 manager class 모듈
+
+외부 public하게 노출된 메서드는 addCsvFile()과 getCompanyStockData() 이며 각 기능은 다음과 같다.
+
+addCsvFile() : 해당 클래스에서 받아온 회사와 회사코드 데이터를 csv 파일로 지정된 경로에 저장
+getCompanyData() : csv 파일을 읽은 뒤 회사 이름을 input으로 받아 해당 회사의 주식 코드를 return함
+"""
+
 import pandas
 import pandas as pd
 import pandas_datareader as pdr

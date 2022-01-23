@@ -3,6 +3,8 @@
 
 stock analysis의 경우 GRU model을 사용하여 이전 주식 데이터를 이용하여 이후 데이터를 예측합니다.
 어떤 회사 주식을 예측하는지는 사용자의 input으로 들어오며 duration 역시 사용자 input으로 받습니다.
+
+2022-01-08 20:20 - issue6에 추가된 개선사항 중 하나인 데이터 디렉토리 통일화 및 회사 이름 및 코드 csv 파일 갱신 로직 재구현
 """
 import numpy as np
 import plaidml.keras
@@ -23,9 +25,6 @@ import os.path
 import csv
 from .stockdata import StockData
 
-import sys
-
-print(sys.path)
 
 def index(request):
     return render(request, 'capstone_project/index.html')
@@ -67,6 +66,7 @@ def stock_analysis(request):
         stock_data_manager = StockData()
         stock_data_manager.addCsvFile()
 
+    # 이후 갱신된 파일 read
     path = 'main/data/company_list/companylist.csv'
     company_dataframe = pd.read_csv(path)
 
