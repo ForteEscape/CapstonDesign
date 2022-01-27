@@ -1,12 +1,8 @@
-from django.urls import path, include
+from django.urls import path
 from . import views
 
-index_patterns = [
+urlpatterns = [
     path('', views.index),
     path('index/', views.index, name='index'),
-    path('stockanalysis/', views.stockanalysis, name='stock'),
-]
-
-urlpatterns = [
-    path('', include(index_patterns))
+    path('stock_analysis/', views.stock_analysis, name='stock'),
 ]

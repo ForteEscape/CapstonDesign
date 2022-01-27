@@ -23,20 +23,25 @@
 ├─capstone_project
 │  │
 │  ├─accounts                                               - 계정 관련 기능 모듈
+│  │   ├─static                                             - frontend 자원들 저장
+│  │   │   ├─css
+│  │   │   └─js
+│  │   └─templates                                          - accounts 앱에 사용되는 html파일 저장
+│  │       └─accounts   
 │  │
 │  ├─capstone_project                                       - 프로젝트 전체 관리 모듈
 │  │
 │  ├─main
 │  │   ├─data                                               - data파일 저장용
+│  │   │  └─company_list                                    - 회사 이름 및 코드 데이터 저장 디렉토리
 │  │   ├─static
 │  │   │  ├─css                                             - css파일 저장
 │  │   │  ├─images                                          - frontend 이미지 저장
 │  │   │  └─js                                              - javascript파일 저장
 │  │   └─templates
-│  │      └─capstone_project                                - html파일 저장
+│  │      └─capstone_project                                - main앱에 사용되는 html파일 저장
 │  └─templates                                              - base html파일 저장(템플릿 확장용)
 │
-├─reference                                                 - 개발 시 참고용 파일 저장
 └─venv                                                      - 가상 환경 파일들
 
 ```
