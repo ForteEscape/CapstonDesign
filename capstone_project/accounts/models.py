@@ -81,3 +81,15 @@ class User(AbstractUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+class CompanySearch(models.Model):
+    email = models.ForeignKey('User', on_delete=models.CASCADE, related_name='user_email')
+    company_name = models.CharField(max_length=300, null=True)
+    search_count = models.IntegerField(null=True)
+
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'company'
+

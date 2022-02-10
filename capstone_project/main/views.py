@@ -9,6 +9,8 @@ stock analysis의 경우 GRU model을 사용하여 이전 주식 데이터를 �
 import numpy as np
 import plaidml.keras
 from django.contrib.auth.decorators import login_required
+from accounts.models import CompanySearch, User
+from django.contrib import messages
 
 plaidml.keras.install_backend()
 
@@ -78,6 +80,25 @@ def stock_analysis(request):
             data_duration = form.cleaned_data['duration_option']
             stock_code = get_company_stock_code(company_dataframe, company_name)
 
+            if stock_code is None:
+                messages.error(request, "해당 회사는 주식장에 존재하지 않습니다.")
+                return render(request, '/stock_analysis.html')
+
+            if not request.user.user_email.filter(company_name=company_name).exists():
+                search_data = CompanySearch.objects.create(
+                    email=request.user,
+                    company_name=company_name,
+                    search_count=1,
+                )
+                search_data.save()
+                print("data input successful")
+            else:
+                search_data = request.user.user_email.get(company_name=company_name)
+                search_data.search_count += 1
+
+                search_data.save()
+                print(search_data.search_count)
+
             # 데이터 크롤링 기간 설정
             option = today - timedelta(int(data_duration))
             option_weight = 1
@@ -88,10 +109,8 @@ def stock_analysis(request):
             dataframe['3MA'] = dataframe['Close'].rolling(window=3).mean()  # data moving average column
             dataframe['5MA'] = dataframe['Close'].rolling(window=5).mean()
 
-            # 만약 해당 주가 정보 파일(csv)가 존재하지 않을 경우에 csv 파일 생성 및 저장 이후 해당 파일을 불러옴으로서 로딩 시간 단축
             stock_path = 'main/data/'
-            if not os.path.isfile(stock_path + company_name + '.csv'):
-                dataframe.to_csv(stock_path + company_name + '.csv', encoding='utf-8-sig')
+            dataframe.to_csv(stock_path + company_name + '.csv', encoding='utf-8-sig')
 
             stock_file = open(stock_path + company_name + '.csv')
             stock_data = csv.reader(stock_file)

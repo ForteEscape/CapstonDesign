@@ -24,7 +24,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import auth, messages
 from django.contrib.auth import login, authenticate
-from .models import User
+from django.contrib.auth.hashers import check_password
+from .models import User, CompanySearch
 
 
 # Create your views here.
@@ -45,11 +46,12 @@ def signin(request):
             return redirect('/')
         else:
             messages.error(request, 'E-mail 또는 비밀번호가 틀립니다.')
-            return render(request, 'accounts/signup.html')
+            return render(request, 'accounts/login.html')
 
     return render(request, 'accounts/login.html')
 
 
+@login_required(login_url='/accounts/login')
 def logout(request):
     auth.logout(request)
     return redirect('/')
@@ -89,6 +91,75 @@ def signup(request):
     return render(request, 'accounts/signup.html')
 
 
+# my page가 불러올 때 CompanySearch 테이블에서 사용자의 검색 기록들을 훑어 가장 많이 검색한 3개 회사를 출력한다.
 @login_required(login_url='/accounts/login')
 def mypage(request):
-    return render(request, 'accounts/mypage.html')
+    rank_data = CompanySearch.objects.filter(email=request.user).all().order_by('-search_count')
+
+    rank_list = ["None", "None", "None"]
+    rank_count_list = [0, 0, 0]
+    rank_list_index = 0
+
+    for index in rank_data:
+        if rank_list_index >= 3:
+            rank_list.append(index.company_name)
+            rank_count_list.append(index.search_count)
+        else:
+            rank_list[rank_list_index] = index.company_name
+            rank_count_list[rank_list_index] = index.search_count
+            rank_list_index += 1
+
+    return render(request, 'accounts/mypage.html', {
+        'first': rank_list[0],
+        'second': rank_list[1],
+        'third': rank_list[2],
+        'label': rank_list,
+        'data': rank_count_list,
+        'min': 0,
+        'max': max(rank_count_list)
+    })
+
+
+@login_required(login_url='/accounts/login')
+def pwd_change(request):
+    """
+    :param request: 비밀번호 변경을 위한 유저 확인용 파라메터
+    :return: 비밀번호 변경 성공 시 비밀번호를 변경함과 동시에 로그아웃시켜 home으로 redirect
+    """
+    if request.method == 'POST':
+        current_pwd = request.POST['current_pwd']
+        user = request.user
+
+        if check_password(current_pwd, user.password):
+            new_pwd = request.POST['new_pwd']
+            new_pwd_confirm = request.POST['new_pwd_confirm']
+
+            if new_pwd == new_pwd_confirm:
+                user.set_password(new_pwd)
+                user.save()
+
+                return redirect('/')
+            else:
+                messages.error(request, '새 비밀번호의 확인이 잘못되었습니다.')
+                return render(request, 'accounts/pwd_change.html')
+        else:
+            messages.error(request, '기존 비밀번호를 명확히 입력해주세요.')
+
+    return render(request, 'accounts/pwd_change.html')
+
+
+@login_required(login_url='/accounts/login')
+def membership_withdraw(request):
+    if request.method == 'POST':
+        input_pwd = request.POST['current_pwd']
+        user = request.user
+
+        if check_password(input_pwd, user.password):
+            user.delete()
+            return redirect('/')
+        else:
+            messages.error(request, 'Please check your password')
+            return render(request, 'accounts/withdraw.html')
+
+    return render(request, 'accounts/withdraw.html')
+

@@ -16,19 +16,11 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-
                     <div class="card-body">
                         <div class="card-title mb-4">
                             <div class="d-flex justify-content-start">
-                                <div class="image-container">
-                                    <img src="http://placehold.it/150x150" id="imgProfile" style="width: 150px; height: 150px" class="img-thumbnail" />
-                                    <div class="middle">
-                                        <input type="button" class="btn btn-secondary" id="btnChangePicture" value="Change" />
-                                        <input type="file" style="display: none;" id="profilePicture" name="file" />
-                                    </div>
-                                </div>
                                 <div class="userData ml-3">
-                                    <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold"><a href="javascript:void(0);">Some Name</a></h2>
+                                    <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold"><a href="javascript:void(0);">{{ user.username }}</a></h2>
                                 </div>
                                 <div class="ml-auto">
                                     <input type="button" class="btn btn-primary d-none" id="btnDiscard" value="Discard Changes" />
@@ -55,8 +47,7 @@
                                                 <label style="font-weight:bold;">Full Name</label>
                                             </div>
                                             <div class="col-md-8 col-6">
-                                                <!-- 이름 구현 -->
-                                                username
+                                                <p>{{ user.username }}</p>
                                             </div>
                                         </div>
                                         <hr />
@@ -66,49 +57,88 @@
                                                 <label style="font-weight:bold;">User ID</label>
                                             </div>
                                             <div class="col-md-8 col-6">
-                                                <!-- 유저 id 구현 -->
-                                                userid@company.com
+                                                <p>{{ user.email }}</p>
                                             </div>
                                         </div>
                                         <hr />
 
-
                                         <div class="row">
                                             <div class="col-sm-3 col-md-2 col-5">
-                                                <label style="font-weight:bold;">Something</label>
+                                                <label style="font-weight:bold;">1순위로 많이 검색한 회사</label>
                                             </div>
                                             <div class="col-md-8 col-6">
-                                                Something
+                                                {{ first }}
                                             </div>
                                         </div>
                                         <hr />
                                         <div class="row">
                                             <div class="col-sm-3 col-md-2 col-5">
-                                                <label style="font-weight:bold;">Something</label>
+                                                <label style="font-weight:bold;">2순위로 많이 검색한 회사</label>
                                             </div>
                                             <div class="col-md-8 col-6">
-                                                Something
+                                                {{ second }}
                                             </div>
                                         </div>
                                         <hr />
                                         <div class="row">
                                             <div class="col-sm-3 col-md-2 col-5">
-                                                <label style="font-weight:bold;">Something</label>
+                                                <label style="font-weight:bold;">3순위로 많이 검색한 회사</label>
                                             </div>
                                             <div class="col-md-8 col-6">
-                                                Something
+                                                {{ third }}
                                             </div>
                                         </div>
                                         <hr />
 
                                     </div>
                                     <div class="tab-pane fade" id="connectedServices" role="tabpanel" aria-labelledby="ConnectedServices-tab">
-                                        Facebook, Google, Twitter
+                                        <div id="container" style="width: 80%">
+                                            <canvas id="line-chart"></canvas>
+                                        </div>
+
+                                        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+                                        <script>
+                                            var config = {
+                                                type: 'bar',
+                                                data: {
+                                                    labels: {{ label|safe }},
+                                                    datasets:[
+                                                        {
+                                                            borderWidth: 5,
+                                                            borderColor: 'rgba(255, 99, 132, 0.5)',
+                                                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                                            data: {{ data|safe }},
+                                                            label: 'visit count',
+                                                            fill: true,
+                                                            tension: 0,
+                                                        },
+                                                    ]
+                                                },
+                                                options: {
+                                                    scales: {
+                                                        yAxes: [{
+                                                            display: true,
+                                                            ticks: {
+                                                                min: {{ min }},
+                                                                max: {{ max }},
+                                                            }
+                                                        }]
+                                                    }
+                                                }
+                                            };
+
+                                            window.onload = function(){
+                                                var ctx = document.getElementById('line-chart').getContext('2d')
+                                                window.myChart = new Chart(ctx, config);
+                                            };
+                                        </script>
                                     </div>
                                 </div>
 
-                                <button type="button" class="btn btn-danger">비밀번호 변경</button>
-                                <button type="button" class="btn btn-dark">회원탈퇴</button>
+                                <br>
+                                <br>
+                                <a type="button" class="btn btn-danger" href="{% url 'pwd_change'%}">비밀번호 변경</a>
+                                <a type="button" class="btn btn-dark" href="{%url 'withdraw'%}">회원탈퇴</a>
                             </div>
                         </div>
                     </div>
