@@ -20,6 +20,25 @@
                     <div class="card-body">
                         <div class="card-title mb-4">
                             <div class="d-flex justify-content-start">
+
+                                <div class="image-container">
+                                    {% if user.image %}
+                                        <img src={{user.image.url}} id="imgProfile_custom" style="width: 150px; height: 150px" class="img-thumbnail" />
+                                    {% else %}
+                                        <img src="http://placehold.it/150x150" id="imgProfile" style="width: 150px; height: 150px" class="img-thumbnail" />
+                                    {% endif %}
+                                    <div class="middle">
+                                        <form method="post" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="filebox bs3-primary label">
+                                                <label for="ex_file">업로드</label>
+                                                <input type="file" id="ex_file" name="user_pic">
+                                                <button class="btn btn-danger" type="submit">확인</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
                                 <div class="userData ml-3">
                                     <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold"><a href="javascript:void(0);">{{ user.username }}</a></h2>
                                 </div>
@@ -106,8 +125,22 @@
                                                     datasets:[
                                                         {
                                                             borderWidth: 5,
-                                                            borderColor: 'rgba(255, 99, 132, 0.5)',
-                                                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                                            borderColor: [
+                                                                'rgba(255, 99, 132, 0.5)',
+                                                                'rgba(54, 162, 235, 0.5)',
+                                                                'rgba(255, 206, 86, 0.5)',
+                                                                'rgba(75, 192, 192, 0.5)',
+                                                                'rgba(153, 102, 255, 0.5)',
+                                                                'rgba(255, 159, 64, 0.5)'
+                                                            ],
+                                                            backgroundColor: [
+                                                                'rgba(255, 99, 132, 0.5)',
+                                                                'rgba(54, 162, 235, 0.5)',
+                                                                'rgba(255, 206, 86, 0.5)',
+                                                                'rgba(75, 192, 192, 0.5)',
+                                                                'rgba(153, 102, 255, 0.5)',
+                                                                'rgba(255, 159, 64, 0.5)'
+                                                            ],
                                                             data: {{ data|safe }},
                                                             label: '검색수',
                                                             fill: true,
@@ -147,4 +180,6 @@
             </div>
         </div>
     </div>
+
+    <script src="/static/js/mypage.js"></script>
 {% endblock %}

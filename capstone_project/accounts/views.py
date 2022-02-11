@@ -91,7 +91,7 @@ def signup(request):
     return render(request, 'accounts/signup.html')
 
 
-# my page가 불러올 때 CompanySearch 테이블에서 사용자의 검색 기록들을 훑어 가장 많이 검색한 3개 회사를 출력한다.
+# mypage가 불러올 때 CompanySearch 테이블에서 사용자의 검색 기록들을 훑어 가장 많이 검색한 3개 회사를 출력한다.
 @login_required(login_url='/accounts/login')
 def mypage(request):
     rank_data = CompanySearch.objects.filter(email=request.user).all().order_by('-search_count')
@@ -102,12 +102,22 @@ def mypage(request):
 
     for index in rank_data:
         if rank_list_index >= 3:
+            if len(rank_list) >= 6:
+                break
+
             rank_list.append(index.company_name)
             rank_count_list.append(index.search_count)
         else:
             rank_list[rank_list_index] = index.company_name
             rank_count_list[rank_list_index] = index.search_count
             rank_list_index += 1
+
+    if request.method == 'POST':
+        user = request.user
+        user.image = request.FILES['user_pic']
+        user.save()
+
+        messages.success(request, '이미지 변경에 성공했습니다.')
 
     return render(request, 'accounts/mypage.html', {
         'first': rank_list[0],
@@ -116,7 +126,7 @@ def mypage(request):
         'label': rank_list,
         'data': rank_count_list,
         'min': 0,
-        'max': max(rank_count_list)
+        'max': max(rank_count_list) + 1
     })
 
 

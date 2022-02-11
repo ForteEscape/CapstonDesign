@@ -31,7 +31,8 @@ class UserManager(BaseUserManager):
 
         user = self.model(
             email=self.normalize_email(email),
-            username=username
+            username=username,
+            image=None
         )
 
         user.set_password(password)
@@ -43,7 +44,7 @@ class UserManager(BaseUserManager):
         user = self.create_user(
             username=username,
             email=email,
-            password=password
+            password=password,
         )
 
         user.is_admin = True
@@ -62,6 +63,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
 
     objects = UserManager()
 
@@ -92,4 +94,5 @@ class CompanySearch(models.Model):
 
     class Meta:
         db_table = 'company'
+
 
