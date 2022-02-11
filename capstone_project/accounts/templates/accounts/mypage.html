@@ -10,8 +10,9 @@
 
 {% block content %}
     <link rel="stylesheet" href="https://bootswatch.com/4/simplex/bootstrap.min.css"/>
-    <script src="/static/css/mypage.css"></script>
+    <link rel="stylesheet" href="/static/css/mypage.css">
 
+    <br><br><br><br>
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -35,7 +36,7 @@
                                         <a class="nav-link active" id="basicInfo-tab" data-toggle="tab" href="#basicInfo" role="tab" aria-controls="basicInfo" aria-selected="true">Basic Info</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="connectedServices-tab" data-toggle="tab" href="#connectedServices" role="tab" aria-controls="connectedServices" aria-selected="false">즐겨찾는 기업들</a>
+                                        <a class="nav-link" id="connectedServices-tab" data-toggle="tab" href="#connectedServices" role="tab" aria-controls="connectedServices" aria-selected="false">기업 검색 그래프</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content ml-1" id="myTabContent">
@@ -108,7 +109,7 @@
                                                             borderColor: 'rgba(255, 99, 132, 0.5)',
                                                             backgroundColor: 'rgba(255, 99, 132, 0.5)',
                                                             data: {{ data|safe }},
-                                                            label: 'visit count',
+                                                            label: '검색수',
                                                             fill: true,
                                                             tension: 0,
                                                         },
@@ -146,6 +147,4 @@
             </div>
         </div>
     </div>
-
-    <script src="/static/js/mypage.js"></script>
 {% endblock %}
